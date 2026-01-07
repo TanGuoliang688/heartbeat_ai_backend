@@ -1,0 +1,52 @@
+server:
+  port: 8080  # 后端端口
+
+spring:
+  # 数据库配置
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/heartbeat_ai?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai
+    username: root  # 你的MySQL用户名
+    password: TANguoliang666  # 你的MySQL密码
+  # Redis配置
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password:
+      database: 0
+
+# MyBatis-Plus配置
+mybatis-plus:
+  mapper-locations: classpath:mybatis/*.xml
+  type-aliases-package: com.heartbeat.entity
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+
+# ========== 多AI模型配置 ==========
+ai:
+  provider: zhipu  # 切换开关：wenxin（文心一言）/ deepseek（深度求索）
+  # 智谱
+  zhipu:
+    api-key: fc89b207cc424d628093820022173382.5gVx1l8SNuSolhws
+  #讯飞
+  xunfei:
+    app-id: your-xunfei-app-id
+    api-key: your-xunfei-api-key
+    api-secret: your-xunfei-api-secret
+  # 文心一言配置
+  wenxin:
+    api-key: your-wenxin-api-key
+    secret-key: your-wenxin-secret-key
+  # DeepSeek配置
+  deepseek:
+    api-key: sk-9e7fe21b26f8411b8e283d16b00e0a35
+    base-url: https://api.deepseek.com/v1
+    model-name: deepseek-chat
+
+# JWT配置
+jwt:
+  secret: heartbeat-ai-2026-secret  # 自定义密钥（建议复杂）
+  expire: 86400000  # 令牌过期时间（1天，毫秒）
