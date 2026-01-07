@@ -2,6 +2,7 @@ package com.tangl.heartbeatai.service;
 
 import com.tangl.heartbeatai.dto.ChatWordsRequest;
 import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
  * 业务层：调用统一AI接口（无需关心具体模型）
  */
 @Service
+@Slf4j // 新增
 public class ChatWordsService {
 
     // 注入动态选择的AI实现类
