@@ -3,10 +3,16 @@ package com.tangl.heartbeatai.controller;
 
 import com.tangl.heartbeatai.common.Result;
 import com.tangl.heartbeatai.dto.ChatWordsRequest;
+//import com.tangl.heartbeatai.entity.TbOperationLog;
+import com.tangl.heartbeatai.entity.TbOperationLog;
+import com.tangl.heartbeatai.enums.OperationTypeEnum;
 import com.tangl.heartbeatai.service.ChatWordsService;
+
+import com.tangl.heartbeatai.service.TbOperationLogService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j; // 先加日志注解（后续步骤会用）
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,39 +20,52 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * 话术生成控制器（重构：简化日志调用）
+ */
+@Slf4j
 @RestController
 @RequestMapping("/api/chat")
-@Tag(name = "聊天话术接口", description = "生成恋爱聊天话术")
-@Slf4j // 新增：日志注解
 public class ChatWordsController {
 
-    private final ChatWordsService chatWordsService;
+    @Autowired
+    private ChatWordsService chatWordsService;
 
-    public ChatWordsController(ChatWordsService chatWordsService) {
-        this.chatWordsService = chatWordsService;
-    }
+    @Autowired
+    private TbOperationLogService operationLogService;
 
     @PostMapping("/generate-words")
-    @Operation(summary = "生成聊天话术", description = "根据对方消息和风格生成恋爱话术")
-    // 关键修改：添加@Validated注解，启用参数校验
-    public Result<String> generateChatWords(@Validated @RequestBody ChatWordsRequest request) {
-        // 1. 日志：打印入参
-        log.info("生成话术请求参数：targetMessage={}, style={}, userId={}",
-                request.getTargetMessage(), request.getStyle(), request.getUserId());
-
-        // 2. 移除所有手动if校验，改为默认值设置
-        if (!StringUtils.hasText(request.getStyle())) {
-            request.setStyle("温柔");
-            log.info("风格为空，默认设置为：温柔");
-        }
-
+    public Result<String> generateWords(@Validated @RequestBody ChatWordsRequest request) {
+        log.info("接收到话术生成请求：{}", request);
         try {
-            String result = chatWordsService.generateChatWords(request);
-            log.info("生成话术成功，结果长度：{}", result.length());
-            return Result.success("话术生成成功", result);
+            // 1. 核心业务逻辑
+            String words = chatWordsService.generateChatWords(request);
+            Result<String> successResult = Result.success("话术生成成功", words);
+
+            // 2. 保存操作日志（重构后：一行代码完成日志保存）
+            operationLogService.saveOperationLog(
+                    request.getUserId(),
+                    OperationTypeEnum.GENERATE_WORDS,
+                    request,
+                    successResult,
+                    true // 操作成功
+            );
+
+            return successResult;
         } catch (Exception e) {
-            log.error("生成话术失败", e);
-            return Result.error("生成话术失败：" + e.getMessage());
+            log.error("话术生成失败", e);
+            Result<String> errorResult = Result.error("话术生成失败：" + e.getMessage());
+
+            // 3. 保存失败日志
+            operationLogService.saveOperationLog(
+                    request.getUserId(),
+                    OperationTypeEnum.GENERATE_WORDS,
+                    request,
+                    errorResult,
+                    false // 操作失败
+            );
+
+            return errorResult;
         }
     }
 }
