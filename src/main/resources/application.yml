@@ -47,5 +47,5 @@ ai:
 
 # JWT配置
 jwt:
-  secret: heartbeat-ai-2026-secret  # 自定义密钥（建议复杂）
+  secret: heartbeatai20260108secretkey1234567890abcdef123  # 自定义密钥（建议复杂）
   expire: 86400000  # 令牌过期时间（1天，毫秒）

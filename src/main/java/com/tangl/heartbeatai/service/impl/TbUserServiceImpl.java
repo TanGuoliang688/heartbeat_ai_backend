@@ -26,6 +26,9 @@ public class TbUserServiceImpl extends ServiceImpl<TbUserMapper, TbUser> impleme
     @Autowired
     private TbUserMapper userMapper;
 
+    @Autowired
+    private JwtUtil jwtUtil;
+
     // 密码加密器
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -84,7 +87,7 @@ public class TbUserServiceImpl extends ServiceImpl<TbUserMapper, TbUser> impleme
         updateById(user);
 
         // 5. 生成JWT token（携带用户ID）
-        JwtUtil jwtUtil = new JwtUtil(); // 创建JwtUtil类的实例
+//        JwtUtil jwtUtil = new JwtUtil(); // 创建JwtUtil类的实例
         String token = jwtUtil.generateToken(user.getId(), dto.getPhone()); // 原始手机号用于生成token
         return Result.success("登录成功", token);
     }

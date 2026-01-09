@@ -24,7 +24,7 @@ public class JwtUtil {
      * JWT密钥（必须≥32位，生产环境建议配置在环境变量中，避免硬编码）
      * 配置在application.yml中，通过@Value注入
      */
-    @Value("${jwt.secret:heartbeatai20260108secretkey1234567890abcdef}")
+    @Value("${jwt.secret:heartbeatai20260108secretkey1234567890abcdef123}")
     private String secret;
 
     /**
