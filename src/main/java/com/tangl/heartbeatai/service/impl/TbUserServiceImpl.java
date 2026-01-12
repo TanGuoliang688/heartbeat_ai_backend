@@ -92,6 +92,19 @@ public class TbUserServiceImpl extends ServiceImpl<TbUserMapper, TbUser> impleme
         return Result.success("登录成功", token);
     }
 
+    /**
+     * 用户登出功能实现
+     * @return 统一返回结果
+     */
+    @Override
+    public Result<Void> logout() {
+        // 1. JWT无状态登出核心逻辑：无需服务端操作token，仅返回成功即可
+        // 2. 可扩展：记录用户登出日志（可选，推荐加上，便于排查问题）
+        log.info("用户执行登出操作，登出时间：{}", new Date());
+        // 3. 返回登出成功结果，前端拿到后执行核心操作
+        return Result.success("登出成功");
+    }
+
     @Override
     public TbUser getUserByPhone(String phone) {
         if (!StringUtils.hasText(phone)) {

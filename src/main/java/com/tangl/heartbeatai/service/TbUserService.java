@@ -29,6 +29,11 @@ public interface TbUserService extends IService<TbUser> {
     Result<String> login(UserLoginDTO dto);
 
     /**
+     * 用户登出
+     */
+    Result<Void> logout();
+
+    /**
      * 根据原始手机号查询用户（登录/校验用）
      * @param phone 原始手机号（未脱敏）
      * @return 用户实体

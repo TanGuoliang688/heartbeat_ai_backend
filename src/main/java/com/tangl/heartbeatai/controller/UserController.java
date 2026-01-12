@@ -26,6 +26,7 @@ public class UserController {
 
     /**
      * 用户注册
+     *
      * @Validated：触发UserRegisterDTO的参数校验，失败则抛出MethodArgumentNotValidException
      * @RequestBody：接收JSON格式参数，映射到DTO
      */
@@ -42,5 +43,10 @@ public class UserController {
     public Result<String> login(@Validated @RequestBody UserLoginDTO dto) {
         log.info("用户登录请求：手机号={}", dto.getPhone());
         return userService.login(dto);
+    }
+
+    @PostMapping("/logout")
+    public Result<Void> logout() {
+        return userService.logout();
     }
 }
